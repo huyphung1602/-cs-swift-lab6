@@ -14,6 +14,7 @@ class PhotoMapViewController: UIViewController {
   @IBOutlet weak var mapView: MKMapView!
 
   var selectedImage: UIImage?
+  var selectedFullImage: UIImage?
 
   // Create a dictionary of photo annotations with the "lat,lng" as the key
   var photoAnnotations = [String: PhotoAnnotation]()
@@ -39,9 +40,18 @@ class PhotoMapViewController: UIViewController {
   }
 
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    if segue.identifier == "tagSegue" {
-      if let locationVC = segue.destinationViewController as? LocationsViewController {
-        locationVC.delegate = self
+    if let identifier = segue.identifier {
+      switch identifier {
+      case "tagSegue":
+        if let locationVC = segue.destinationViewController as? LocationsViewController {
+          locationVC.delegate = self
+        }
+      case "fullImageSegue":
+        if let fullImageVC = segue.destinationViewController as? FullImageViewController {
+          fullImageVC.selectedPhoto = selectedFullImage
+        }
+      default:
+        break
       }
     }
   }
@@ -85,6 +95,7 @@ extension PhotoMapViewController: LocationsViewControllerDelegate {
 }
 
 extension PhotoMapViewController: MKMapViewDelegate {
+
   func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
     let reuseID = "myAnnotationView"
 
@@ -93,6 +104,7 @@ extension PhotoMapViewController: MKMapViewDelegate {
       annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
       annotationView!.canShowCallout = true
       annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+      annotationView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
     }
 
     let coordinateString = "\(annotation.coordinate.latitude),\(annotation.coordinate.longitude)"
@@ -103,4 +115,15 @@ extension PhotoMapViewController: MKMapViewDelegate {
 
     return annotationView
   }
+
+  func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    if let annotation = view.annotation {
+      let coordinateString = "\(annotation.coordinate.latitude),\(annotation.coordinate.longitude)"
+      if let photoAnnotation = photoAnnotations[coordinateString] {
+        selectedFullImage = photoAnnotation.photo
+        performSegueWithIdentifier("fullImageSegue", sender: self)
+      }
+    }
+  }
+
 }

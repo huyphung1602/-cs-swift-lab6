@@ -72,9 +72,23 @@
                     <view key="view" contentMode="scaleToFill" id="IER-PT-2nq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bvp-AP-pS1">
+                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="bvp-AP-pS1" firstAttribute="top" secondItem="FF8-mr-LhG" secondAttribute="bottom" id="0DW-Bd-yf5"/>
+                            <constraint firstItem="bvp-AP-pS1" firstAttribute="leading" secondItem="IER-PT-2nq" secondAttribute="leading" id="4Y3-oo-jr2"/>
+                            <constraint firstAttribute="trailing" secondItem="bvp-AP-pS1" secondAttribute="trailing" id="bPY-7c-1Pb"/>
+                            <constraint firstItem="N8d-FM-OAP" firstAttribute="top" secondItem="bvp-AP-pS1" secondAttribute="bottom" id="jvv-8c-I0g"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HUo-VF-R6y"/>
+                    <connections>
+                        <outlet property="photoImageView" destination="bvp-AP-pS1" id="9PV-m2-yHZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QRl-fe-rlf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
