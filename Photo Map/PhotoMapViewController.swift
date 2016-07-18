@@ -15,6 +15,9 @@ class PhotoMapViewController: UIViewController {
 
   var selectedImage: UIImage?
 
+  // Create a dictionary of photo annotations with the "lat,lng" as the key
+  var photoAnnotations = [String: PhotoAnnotation]()
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
@@ -56,7 +59,6 @@ extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationC
     // Do something with the images (based on your use case)
     selectedImage = originalImage
 
-    print("get image here")
     // Dismiss UIImagePickerController to go back to your original view controller
     dismissViewControllerAnimated(true) {
       self.performSegueWithIdentifier("tagSegue", sender: self)
@@ -67,12 +69,18 @@ extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationC
 
 extension PhotoMapViewController: LocationsViewControllerDelegate {
   func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
-    print("lat: \(latitude)")
-    print("lng: \(longitude)")
-    let annotation = MKPointAnnotation()
-    annotation.coordinate = CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude))
-    annotation.title = "Picture!"
-    mapView.addAnnotation(annotation)
+    if let selectedImage = selectedImage {
+      let coordinate = CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude))
+
+      let photoAnnotation = PhotoAnnotation(coordinate: coordinate, photo: selectedImage)
+      photoAnnotations[photoAnnotation.key] = photoAnnotation
+
+      let annotation = MKPointAnnotation()
+      annotation.coordinate = coordinate
+      annotation.title = photoAnnotation.title ?? "Picture"
+      mapView.addAnnotation(annotation)
+      mapView.selectAnnotation(annotation, animated: true)
+    }
   }
 }
 
@@ -84,11 +92,13 @@ extension PhotoMapViewController: MKMapViewDelegate {
     if annotationView == nil {
       annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
       annotationView!.canShowCallout = true
-      annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x:0, y:0, width: 50, height:50))
+      annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     }
 
-    if let imageView = annotationView?.leftCalloutAccessoryView as? UIImageView {
-      imageView.image = UIImage(named: "camera")
+    let coordinateString = "\(annotation.coordinate.latitude),\(annotation.coordinate.longitude)"
+
+    if let imageView = annotationView?.leftCalloutAccessoryView as? UIImageView, photoAnnotation = photoAnnotations[coordinateString] {
+      imageView.image = photoAnnotation.thumbnail
     }
 
     return annotationView
