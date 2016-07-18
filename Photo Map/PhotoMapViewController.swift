@@ -18,6 +18,8 @@ class PhotoMapViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    mapView.delegate = self
+
     //one degree of latitude is approximately 111 kilometers (69 miles) at all times.
     let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),
                                           MKCoordinateSpanMake(0.1, 0.1))
@@ -67,5 +69,28 @@ extension PhotoMapViewController: LocationsViewControllerDelegate {
   func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
     print("lat: \(latitude)")
     print("lng: \(longitude)")
+    let annotation = MKPointAnnotation()
+    annotation.coordinate = CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude))
+    annotation.title = "Picture!"
+    mapView.addAnnotation(annotation)
+  }
+}
+
+extension PhotoMapViewController: MKMapViewDelegate {
+  func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    let reuseID = "myAnnotationView"
+
+    var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseID)
+    if annotationView == nil {
+      annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
+      annotationView!.canShowCallout = true
+      annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x:0, y:0, width: 50, height:50))
+    }
+
+    if let imageView = annotationView?.leftCalloutAccessoryView as? UIImageView {
+      imageView.image = UIImage(named: "camera")
+    }
+
+    return annotationView
   }
 }
