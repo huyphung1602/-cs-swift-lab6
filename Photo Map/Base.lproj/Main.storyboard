@@ -35,6 +35,9 @@
                                         <integer key="value" value="45"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="onCameraButtonTapped:" destination="ghP-Ww-KKQ" eventType="touchUpInside" id="ZCQ-dZ-FV0"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

@@ -13,6 +13,8 @@ class PhotoMapViewController: UIViewController {
 
   @IBOutlet weak var mapView: MKMapView!
 
+  var selectedImage: UIImage?
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
@@ -20,6 +22,35 @@ class PhotoMapViewController: UIViewController {
     let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),
                                           MKCoordinateSpanMake(0.1, 0.1))
     mapView.setRegion(sfRegion, animated: false)
+  }
+
+  @IBAction func onCameraButtonTapped(sender: UIButton) {
+    let vc = UIImagePickerController()
+    vc.delegate = self
+    vc.allowsEditing = true
+    vc.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+
+    presentViewController(vc, animated: true, completion: nil)
+  }
+
+}
+
+extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+  func imagePickerController(picker: UIImagePickerController,
+                             didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    // Get the image captured by the UIImagePickerController
+    let originalImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+    // let editedImage = info[UIImagePickerControllerEditedImage] as! UIImage
+
+    // Do something with the images (based on your use case)
+    selectedImage = originalImage
+
+    print("get image here")
+    // Dismiss UIImagePickerController to go back to your original view controller
+    dismissViewControllerAnimated(true) {
+      self.performSegueWithIdentifier("tagSegue", sender: self)
+    }
   }
 
 }
