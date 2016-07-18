@@ -111,6 +111,7 @@ extension PhotoMapViewController: MKMapViewDelegate {
 
     if let imageView = annotationView?.leftCalloutAccessoryView as? UIImageView, photoAnnotation = photoAnnotations[coordinateString] {
       imageView.image = photoAnnotation.thumbnail
+      annotationView?.image = photoAnnotation.thumbnail
     }
 
     return annotationView
