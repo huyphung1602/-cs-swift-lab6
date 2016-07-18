@@ -33,6 +33,14 @@ class PhotoMapViewController: UIViewController {
     presentViewController(vc, animated: true, completion: nil)
   }
 
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    if segue.identifier == "tagSegue" {
+      if let locationVC = segue.destinationViewController as? LocationsViewController {
+        locationVC.delegate = self
+      }
+    }
+  }
+
 }
 
 extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -53,4 +61,11 @@ extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationC
     }
   }
 
+}
+
+extension PhotoMapViewController: LocationsViewControllerDelegate {
+  func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
+    print("lat: \(latitude)")
+    print("lng: \(longitude)")
+  }
 }
