@@ -23,14 +23,14 @@ class PhotoAnnotation: NSObject, MKAnnotation {
 
   var thumbnail: UIImage? {
     if let photo = photo {
-      let resizeRenderImageView = UIImageView(frame: CGRectMake(0, 0, 45, 45))
-      resizeRenderImageView.layer.borderColor = UIColor.whiteColor().CGColor
+      let resizeRenderImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 45, height: 45))
+      resizeRenderImageView.layer.borderColor = UIColor.white.cgColor
       resizeRenderImageView.layer.borderWidth = 3.0
-      resizeRenderImageView.contentMode = UIViewContentMode.ScaleAspectFill
+      resizeRenderImageView.contentMode = UIViewContentMode.scaleAspectFill
       resizeRenderImageView.image = photo
 
       UIGraphicsBeginImageContext(resizeRenderImageView.frame.size)
-      resizeRenderImageView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+      resizeRenderImageView.layer.render(in: UIGraphicsGetCurrentContext()!)
       let thumbnail = UIGraphicsGetImageFromCurrentImageContext()
       UIGraphicsEndImageContext()
 

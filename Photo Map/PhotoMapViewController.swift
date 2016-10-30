@@ -30,24 +30,24 @@ class PhotoMapViewController: UIViewController {
     mapView.setRegion(sfRegion, animated: false)
   }
 
-  @IBAction func onCameraButtonTapped(sender: UIButton) {
+  @IBAction func onCameraButtonTapped(_ sender: UIButton) {
     let vc = UIImagePickerController()
     vc.delegate = self
     vc.allowsEditing = true
-    vc.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+    vc.sourceType = UIImagePickerControllerSourceType.photoLibrary
 
-    presentViewController(vc, animated: true, completion: nil)
+    present(vc, animated: true, completion: nil)
   }
 
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if let identifier = segue.identifier {
       switch identifier {
       case "tagSegue":
-        if let locationVC = segue.destinationViewController as? LocationsViewController {
+        if let locationVC = segue.destination as? LocationsViewController {
           locationVC.delegate = self
         }
       case "fullImageSegue":
-        if let fullImageVC = segue.destinationViewController as? FullImageViewController {
+        if let fullImageVC = segue.destination as? FullImageViewController {
           fullImageVC.selectedPhoto = selectedFullImage
         }
       default:
@@ -60,8 +60,8 @@ class PhotoMapViewController: UIViewController {
 
 extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-  func imagePickerController(picker: UIImagePickerController,
-                             didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+  func imagePickerController(_ picker: UIImagePickerController,
+                             didFinishPickingMediaWithInfo info: [String : Any]) {
     // Get the image captured by the UIImagePickerController
     let originalImage = info[UIImagePickerControllerOriginalImage] as! UIImage
     // let editedImage = info[UIImagePickerControllerEditedImage] as! UIImage
@@ -70,18 +70,18 @@ extension PhotoMapViewController: UIImagePickerControllerDelegate, UINavigationC
     selectedImage = originalImage
 
     // Dismiss UIImagePickerController to go back to your original view controller
-    dismissViewControllerAnimated(true) {
-      self.performSegueWithIdentifier("tagSegue", sender: self)
+    dismiss(animated: true) {
+      self.performSegue(withIdentifier: "tagSegue", sender: self)
     }
   }
 
 }
 
 extension PhotoMapViewController: LocationsViewControllerDelegate {
-  func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
+  func locationsPickedLocation(_ controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
     if let selectedImage = selectedImage {
       let coordinate = CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude))
-
+        
       let photoAnnotation = PhotoAnnotation(coordinate: coordinate, photo: selectedImage)
       photoAnnotations[photoAnnotation.key] = photoAnnotation
 
@@ -96,33 +96,35 @@ extension PhotoMapViewController: LocationsViewControllerDelegate {
 
 extension PhotoMapViewController: MKMapViewDelegate {
 
-  func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+  func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     let reuseID = "myAnnotationView"
 
-    var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseID)
+    var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID)
     if annotationView == nil {
       annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
       annotationView!.canShowCallout = true
       annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-      annotationView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+      annotationView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
     }
 
     let coordinateString = "\(annotation.coordinate.latitude),\(annotation.coordinate.longitude)"
 
-    if let imageView = annotationView?.leftCalloutAccessoryView as? UIImageView, photoAnnotation = photoAnnotations[coordinateString] {
+    if let imageView = annotationView?.leftCalloutAccessoryView as? UIImageView, let photoAnnotation = photoAnnotations[coordinateString] {
       imageView.image = photoAnnotation.thumbnail
+
       annotationView?.image = photoAnnotation.thumbnail
+//        annotationView?.backgroundColor = UIColor.whiteColor()
     }
 
     return annotationView
   }
 
-  func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+  func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
     if let annotation = view.annotation {
       let coordinateString = "\(annotation.coordinate.latitude),\(annotation.coordinate.longitude)"
       if let photoAnnotation = photoAnnotations[coordinateString] {
         selectedFullImage = photoAnnotation.photo
-        performSegueWithIdentifier("fullImageSegue", sender: self)
+        performSegue(withIdentifier: "fullImageSegue", sender: self)
       }
     }
   }

@@ -7,7 +7,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Photo Map View Controller-->
+        <!--Photo Map-->
         <scene sceneID="Eh3-Ch-REm">
             <objects>
                 <viewController id="ghP-Ww-KKQ" customClass="PhotoMapViewController" customModule="Photo_Map" customModuleProvider="target" sceneMemberID="viewController">
@@ -50,7 +50,7 @@
                             <constraint firstItem="FUE-aU-ckP" firstAttribute="top" secondItem="vrG-Wc-0bn" secondAttribute="bottom" id="vkQ-d2-TqC"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="aPF-0T-Ydb"/>
+                    <navigationItem key="navigationItem" title="Photo Map" id="aPF-0T-Ydb"/>
                     <connections>
                         <outlet property="mapView" destination="FUE-aU-ckP" id="vR7-oF-dM3"/>
                         <segue destination="eZf-Nb-6PU" kind="push" identifier="tagSegue" id="Tzv-N2-17x"/>
