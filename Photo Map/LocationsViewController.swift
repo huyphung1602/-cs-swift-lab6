@@ -8,8 +8,8 @@
 
 import UIKit
 
-protocol LocationsViewControllerDelegate : class {
-  func locationsPickedLocation(_ controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber)
+@objc protocol LocationsViewControllerDelegate {
+  @objc func locationsPickedLocation(_ controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber)
 }
 
 class LocationsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
